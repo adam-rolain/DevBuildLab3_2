@@ -20,12 +20,17 @@ namespace Lab3_2DeliCounterMenu
                 Console.WriteLine("Welcome to the Deli Counter. Here are our menu items: ");
                 DisplayMenu(menuItems);
 
-                Console.WriteLine("\nPlease choose from the following options:");
-                Console.WriteLine("Type 'A' to add a new item to the menu");
-                Console.WriteLine("Type 'R' to remove an item from the menu");
-                Console.WriteLine("Type 'C' to change an item on the menu");
-                Console.WriteLine("Type 'Q' to quit\n");
-                userInput = Console.ReadLine().ToUpper();
+                bool validInput = false;
+                while (!validInput)
+                {
+                    Console.WriteLine("\nPlease choose from the following options:");
+                    Console.WriteLine("Type 'A' to add a new item to the menu");
+                    Console.WriteLine("Type 'R' to remove an item from the menu");
+                    Console.WriteLine("Type 'C' to change an item on the menu");
+                    Console.WriteLine("Type 'Q' to quit\n");
+                    userInput = Console.ReadLine().ToUpper();
+                    validInput = IsValidString(userInput, "A", "R", "C", "Q");
+                }
 
                 switch (userInput)
                 {
@@ -62,10 +67,22 @@ namespace Lab3_2DeliCounterMenu
 
         static void AddMenuItem(Dictionary<string, decimal> existingMenu)
         {
-            string name;
+            bool alreadyExists = true;
+            string name = "";
             decimal price;
-            Console.Write("What is the name of the new menu item you would like to add? ");
-            name = Console.ReadLine();
+            while (alreadyExists)
+            {
+                Console.Write("What is the name of the new menu item you would like to add? ");
+                name = Console.ReadLine();
+                if (!existingMenu.ContainsKey(name))
+                {
+                    alreadyExists = false;
+                }
+                else
+                {
+                    Console.WriteLine("That item already exists on the menu, try again!\n");
+                }
+            }
             Console.Write("What is the price? ");
             price = decimal.Parse(Console.ReadLine());
 
@@ -122,6 +139,33 @@ namespace Lab3_2DeliCounterMenu
 
             existingMenu[name] = existingPrice;
             Console.WriteLine($"{name} has been updated on the menu");
+        }
+
+        static bool IsValidString(string userInput, string validInput1, string validInput2, string validInput3, string validInput4)
+        {
+            bool validString = false;
+            while (!validString)
+            {
+                validString = false;
+                for (int i = 0; i < userInput.Length; i++)
+                {
+                    char letter = char.ToUpper(userInput[i]);
+                    if (letter != char.ToUpper(validInput1[i]) && letter != char.ToUpper(validInput2[i]) && letter != char.ToUpper(validInput3[i]) && letter != char.ToUpper(validInput4[i]))
+                    {
+                        validString = false;
+                        break;
+                    }
+                    else
+                    {
+                        validString = true;
+                    }
+                }
+                if (validString == false)
+                {
+                    break;
+                }
+            }
+            return validString;
         }
     }
 }
